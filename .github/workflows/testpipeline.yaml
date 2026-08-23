@@ -1,0 +1,43 @@
+name: Continuous Integration Demo
+ 
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+ 
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+ 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+        #  cache: true
+        #  cache-dependency-path: |
+        #    **/packages.lock.json
+        #    **/*.csproj
+ 
+      - name: Restore dependencies
+        run: dotnet restore SchoolManagementWeb.csproj
+ 
+      - name: Build
+        run: dotnet build SchoolManagementWeb.csproj --configuration Release --no-restore
+ 
+      # Optional: run tests if/when you add a test project
+      # - name: Test
+      #   run: dotnet test --no-build --configuration Release
+ 
+      - name: dotnet Publish
+        run: dotnet publish SchoolManagementWeb.csproj --configuration Release --no-build --output ./publish
+ 
+      - name: Upload publish artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: schoolmanagementweb-artifact
+          path: ./publish
+          retention-days: 7
