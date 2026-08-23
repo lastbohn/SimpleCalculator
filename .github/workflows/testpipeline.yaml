@@ -23,21 +23,21 @@ jobs:
         #    **/*.csproj
  
       - name: Restore dependencies
-        run: dotnet restore SchoolManagementWeb.csproj
+        run: dotnet restore SimpleCalculator.csproj
  
       - name: Build
-        run: dotnet build SchoolManagementWeb.csproj --configuration Release --no-restore
+        run: dotnet build SimpleCalculator.csproj --configuration Release --no-restore
  
       # Optional: run tests if/when you add a test project
       # - name: Test
       #   run: dotnet test --no-build --configuration Release
  
       - name: dotnet Publish
-        run: dotnet publish SchoolManagementWeb.csproj --configuration Release --no-build --output ./publish
+        run: dotnet publish SimpleCalculator.csproj --configuration Release --no-build --output ./publish
  
       - name: Upload publish artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: schoolmanagementweb-artifact
+          name: SimpleCalculator-artifact
           path: ./publish
           retention-days: 7
