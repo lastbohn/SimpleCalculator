@@ -16,11 +16,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
-        #  cache: true
-        #  cache-dependency-path: |
-        #    **/packages.lock.json
-        #    **/*.csproj
+          dotnet-version: 6.0.x
+          cache: true
+          cache-dependency-path: SimpleCalculator.csproj
  
       - name: Restore dependencies
         run: dotnet restore SimpleCalculator.csproj
@@ -34,6 +32,21 @@ jobs:
  
       - name: dotnet Publish
         run: dotnet publish SimpleCalculator.csproj --configuration Release --no-build --output ./publish
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/simplecalculator:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/simplecalculator:${{ github.sha }}
  
       - name: Upload publish artifact for deployment
         uses: actions/upload-artifact@v4
